@@ -57,14 +57,16 @@ Every run (GUI or command line) writes `USBSafeProtectWorm-Cleaner_<yyyyMMdd_HHm
 
 ## Build from source
 
-No SDK is required. In a Windows command prompt:
+No SDK is required. In PowerShell, from the repository folder:
 
 ```
-%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe /nologo /target:winexe /optimize+ ^
-  /r:System.Management.dll /r:System.Windows.Forms.dll /r:System.Drawing.dll ^
-  /win32manifest:app.manifest /win32icon:app.ico ^
-  /out:USBSafeProtectWorm-Cleaner.exe USBSafeProtectWorm-Cleaner.cs
+.\build.ps1
 ```
+
+This produces `bin\USBSafeProtectWorm-Cleaner.exe`. If script execution is blocked, run `powershell -ExecutionPolicy Bypass -File .\build.ps1`.
+
+Pushing a tag starting with `v` (for example `v0.1.1`) builds the exe on GitHub and publishes a release.
+
 ## License
 
 [MIT](LICENSE)

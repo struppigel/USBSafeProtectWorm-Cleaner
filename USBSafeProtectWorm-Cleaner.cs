@@ -41,7 +41,7 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 
 [assembly: System.Reflection.AssemblyTitle("USBSafeProtectWorm-Cleaner")]
-[assembly: System.Reflection.AssemblyVersion("1.0.0.0")]
+[assembly: System.Reflection.AssemblyVersion("0.1.1.0")]
 
 namespace UsbSafeProtectCleaner
 {
@@ -749,6 +749,15 @@ namespace UsbSafeProtectCleaner
 
             status.Dock = DockStyle.Bottom; status.Height = 24; status.Padding = new Padding(8, 4, 8, 0); status.Text = "Ready. Click Scan to check this PC and all drives.";
 
+            var about = new LinkLabel
+            {
+                Text = "About", Name = "lnkAbout", AutoSize = true, Dock = DockStyle.Right,
+                Font = new Font("Segoe UI", 7.5f), LinkBehavior = LinkBehavior.AlwaysUnderline,
+                LinkColor = Color.DimGray, ActiveLinkColor = Color.Black, Cursor = Cursors.Hand
+            };
+            about.LinkClicked += (s, e) => new AboutForm().ShowDialog(this);
+            status.Controls.Add(about);
+
             Controls.Add(split); Controls.Add(top); Controls.Add(status);
 
             engine.Log = msg =>
@@ -849,6 +858,49 @@ namespace UsbSafeProtectCleaner
                 Close();
             }
             catch (System.ComponentModel.Win32Exception) { }
+        }
+    }
+
+    class AboutForm : Form
+    {
+        const string RepoUrl = "https://github.com/struppigel/USBSafeProtectWorm-Cleaner";
+
+        public AboutForm()
+        {
+            Text = "About";
+            FormBorderStyle = FormBorderStyle.FixedDialog; MaximizeBox = false; MinimizeBox = false; ShowInTaskbar = false;
+            StartPosition = FormStartPosition.CenterParent;
+            Font = new Font("Segoe UI", 9f);
+            AutoScaleMode = AutoScaleMode.Font;
+            AutoSize = true; AutoSizeMode = AutoSizeMode.GrowAndShrink;
+
+            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            var panel = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.TopDown, WrapContents = false, AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink, Dock = DockStyle.Fill, Padding = new Padding(16, 14, 16, 12)
+            };
+
+            Func<string, Font, Padding, Label> label = (text, font, margin) =>
+                new Label { Text = text, Font = font ?? Font, AutoSize = true, MaximumSize = new Size(380, 0), Margin = margin };
+
+            var link = new LinkLabel { Text = RepoUrl, AutoSize = true, Margin = new Padding(0, 10, 0, 0) };
+            link.LinkClicked += (s, e) =>
+            {
+                try { Process.Start(new ProcessStartInfo(RepoUrl) { UseShellExecute = true }); } catch { }
+            };
+            var ok = new Button { Text = "OK", DialogResult = DialogResult.OK, AutoSize = true, MinimumSize = new Size(80, 26), Margin = new Padding(0, 14, 0, 0) };
+
+            panel.Controls.Add(label("USBSafeProtectWorm-Cleaner", new Font("Segoe UI", 12f, FontStyle.Bold), new Padding(0)));
+            panel.Controls.Add(label("Version " + version.ToString(3), null, new Padding(0, 2, 0, 0)));
+            panel.Controls.Add(label("Removal and file-recovery tool for the \"Usb Safe Protect\" USB worm.", null, new Padding(0, 12, 0, 0)));
+            panel.Controls.Add(label("Written by Karsten Hahn", null, new Padding(0, 10, 0, 0)));
+            panel.Controls.Add(label("MIT License. Provided as is, without warranty.", null, new Padding(0, 10, 0, 0)));
+            panel.Controls.Add(link);
+            panel.Controls.Add(ok);
+
+            Controls.Add(panel);
+            AcceptButton = ok; CancelButton = ok;
         }
     }
 
