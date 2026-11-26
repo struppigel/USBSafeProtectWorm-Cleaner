@@ -4,6 +4,10 @@ Removal and file-recovery tool for the **"Usb Safe Protect"** USB worm.
 
 The worm hides your files in an invisible folder on USB drives and network shares and leaves a launcher in their place. This tool removes the worm and moves your files back.
 
+![An infected USB drive in Explorer: only "Usb Safe Protect.exe" is visible](screenshots/infected_stick_explorer_default_small.png)
+
+An infected drive looks like this: the only visible item is `Usb Safe Protect.exe`, while your files are hidden.
+
 Removed malware is quarantined in `%ProgramData%\USBSafeProtectWorm-Cleaner\Quarantine`.
 
 ## Requirements

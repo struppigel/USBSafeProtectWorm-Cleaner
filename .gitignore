@@ -40,3 +40,7 @@ Desktop.ini
 # Logs and temp files
 *.log
 *.tmp
+
+# Screenshots (only the one used in the README is tracked)
+screenshots/*
+!screenshots/infected_stick_explorer_default_small.png
