@@ -69,7 +69,7 @@ No SDK is required. In PowerShell, from the repository folder:
 
 This produces `bin\USBSafeProtectWorm-Cleaner.exe`. If script execution is blocked, run `powershell -ExecutionPolicy Bypass -File .\build.ps1`.
 
-Pushing a tag starting with `v` (for example `v0.1.1`) builds the exe on GitHub and publishes a release.
+Pushing a tag starting with `v` (for example `v0.1.2`) builds the exe on GitHub and publishes a release.
 
 ## License
 

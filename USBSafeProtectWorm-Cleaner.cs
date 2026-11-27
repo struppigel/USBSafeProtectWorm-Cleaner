@@ -41,7 +41,7 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 
 [assembly: System.Reflection.AssemblyTitle("USBSafeProtectWorm-Cleaner")]
-[assembly: System.Reflection.AssemblyVersion("0.1.1.0")]
+[assembly: System.Reflection.AssemblyVersion("0.1.2.0")]
 
 namespace UsbSafeProtectCleaner
 {
