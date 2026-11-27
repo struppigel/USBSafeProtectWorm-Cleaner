@@ -461,10 +461,17 @@ namespace UsbSafeProtectCleaner
                 {
                     string name = Path.GetFileName(src);
                     bool isDir = Directory.Exists(src);
-                    // A second infection moves the previous launcher in here as well.
-                    if (!isDir && name.Equals(Ioc.Launcher, StringComparison.OrdinalIgnoreCase) && Ioc.IsKnown(src))
+                    // A second infection moves the previous launcher in here as well. It is deleted whatever its
+                    // hash: a new variant, or a file the antivirus will not let us read, must never be restored
+                    // to the root where users would click it.
+                    if (!isDir && name.Equals(Ioc.Launcher, StringComparison.OrdinalIgnoreCase))
                     {
-                        RemoveMalware(src);
+                        try { RemoveMalware(src); }
+                        catch (Exception ex)
+                        {
+                            failed++;
+                            L("ERROR", "Could not delete worm launcher " + Ioc.Show(src) + ": " + Reason(ex));
+                        }
                         continue;
                     }
                     string dst = r + name;
@@ -479,7 +486,7 @@ namespace UsbSafeProtectCleaner
                     catch (Exception ex)
                     {
                         failed++;
-                        L("ERROR", "Could not restore " + Ioc.Show(src) + ": " + ex.Message);
+                        L("ERROR", "Could not restore " + Ioc.Show(src) + ": " + Reason(ex));
                     }
                 }
                 if (!Directory.EnumerateFileSystemEntries(files).Any()) ForceDeleteDir(files);
@@ -497,6 +504,17 @@ namespace UsbSafeProtectCleaner
                 else
                     L("ERROR", Ioc.Show(top) + " still contains items and was left in place; check it manually");
             }
+        }
+
+        // Error text for the log; points out when the antivirus blocked the file
+        // (ERROR_VIRUS_INFECTED 225 / ERROR_VIRUS_DELETED 226).
+        static string Reason(Exception ex)
+        {
+            string msg = ex.Message.Trim();   // Windows messages end with a line break
+            uint hr = unchecked((uint)ex.HResult);
+            if (hr == 0x800700E1 || hr == 0x800700E2)
+                return msg + " (blocked by the antivirus, which usually removes the file itself; scan again in a minute)";
+            return msg;
         }
 
         static string FreeName(string dir, string name, bool isDir)
